@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const BASE_URL = 'https://api.unsplash.com';
 
-// Create an instance of axios with base URL and headers
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -10,11 +9,10 @@ const api = axios.create({
   },
 });
 
-// Fetch a list of photos (for the grid view)
 export const fetchPhotos = async (page = 1) => {
   try {
     const response = await api.get('/photos', {
-      params: { page, per_page: 10 }, // Fetch 10 photos per page
+      params: { page, per_page: 10 },
     });
     return response.data;
   } catch (error) {
@@ -23,7 +21,6 @@ export const fetchPhotos = async (page = 1) => {
   }
 };
 
-// Fetch photo details by ID
 export const fetchPhotoById = async (id) => {
   try {
     const response = await api.get(`/photos/${id}`);

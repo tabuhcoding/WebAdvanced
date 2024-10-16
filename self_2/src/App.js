@@ -3,25 +3,25 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { fetchPhotos } from './utils/unsplash-api';
 import PhotoGrid from './components/PhotoGrid';
 import PhotoDetail from './components/PhotoDetail';
+import './style/CustomApp.css';
 
 const App = () => {
   const [photos, setPhotos] = useState([]);
-  const [page, setPage] = useState(1); // For pagination
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null); // To handle errors
+  const [error, setError] = useState(null);
   const [hasMorePhotos, setHasMorePhotos] = useState(true);
-  const observer = useRef(); // Reference for the observer element
+  const observer = useRef();
 
-  // Fetch photos from Unsplash API
   const loadPhotos = async (pageNum) => {
     setLoading(true);
-    setError(null); // Clear previous error
+    setError(null); 
     try {
       const data = await fetchPhotos(pageNum);
       if (data.length === 0) {
-        setHasMorePhotos(false); // No more photos to load
+        setHasMorePhotos(false);
       } else {
-        setPhotos((prevPhotos) => [...prevPhotos, ...data]); // Append new photos
+        setPhotos((prevPhotos) => [...prevPhotos, ...data]);
       }
     } catch (err) {
       setError('Failed to load photos. Please try again.');
@@ -30,23 +30,21 @@ const App = () => {
     }
   };
 
-  // Fetch photos on component mount and when the page number changes
   useEffect(() => {
     loadPhotos(page);
   }, [page]);
 
-  // Infinite Scroll: Set up observer to load more when the last photo is in view
   const lastPhotoElementRef = useCallback((node) => {
-    if (loading || !hasMorePhotos) return; // Check if there are more photos to load
-  
+    if (loading || !hasMorePhotos) return;
+
     if (observer.current) observer.current.disconnect();
-  
+
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMorePhotos) {
-        setPage((prevPage) => prevPage + 1); // Load next page when last photo is visible
+        setPage((prevPage) => prevPage + 1);
       }
     });
-  
+
     if (node) observer.current.observe(node);
   }, [loading, hasMorePhotos]);
 
@@ -58,7 +56,7 @@ const App = () => {
           element={
             <PhotoGrid
               photos={photos}
-              lastPhotoElementRef={lastPhotoElementRef} // Pass the ref to the last photo element
+              lastPhotoElementRef={lastPhotoElementRef}
             />
           }
         />
@@ -68,7 +66,7 @@ const App = () => {
 
       {/* Loading Spinner */}
       {loading && hasMorePhotos && (
-        <div className="text-center">
+        <div className="spinner-container">
           <div className="spinner-border" role="status">
             <span className="sr-only">Loading...</span>
           </div>
@@ -76,15 +74,15 @@ const App = () => {
       )}
 
       {/* Error Message */}
-      {error && hasMorePhotos && (
+      {error && (
         <div className="alert alert-danger text-center">
           {error}
         </div>
       )}
 
-      {/* No More Photos Message */}
+      {/* End of Photos Message */}
       {!hasMorePhotos && (
-        <div className="text-center mt-4">
+        <div className="end-message">
           <p>No more photos to load.</p>
         </div>
       )}

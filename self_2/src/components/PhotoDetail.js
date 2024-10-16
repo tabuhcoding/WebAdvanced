@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPhotoById } from '../utils/unsplash-api';
-import '../style/PhotoDetail.css';
+import '../style/CustomPhotoDetail.css'; // Đổi tên file CSS
 
 const PhotoDetail = () => {
-  const { id } = useParams(); // Get the photo ID from the route
+  const { id } = useParams();
   const navigate = useNavigate();
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch photo details when component is mounted
   useEffect(() => {
     const loadPhoto = async () => {
       setLoading(true);
@@ -18,7 +17,7 @@ const PhotoDetail = () => {
         const data = await fetchPhotoById(id);
         setPhoto(data);
       } catch (err) {
-        setError('Failed to load photo details. Please try again.');
+        setError('Sorry, we couldn’t load the photo. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -28,44 +27,36 @@ const PhotoDetail = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="loading">Loading photo details...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    return <div className="error-message">{error}</div>;
   }
 
   if (!photo) {
-    return <div>Photo not found</div>;
+    return <div className="not-found">Photo not found</div>;
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card">
-            <img
-              src={photo.urls.regular}
-              className="card-img-top"
-              alt={photo.alt_description}
-            />
-            <div className="card-body">
-              <h2 className="card-title">{photo.description || 'Untitled'}</h2>
-              <p className="card-text">
-                <strong>Author:</strong> {photo.user.name}
-              </p>
-              <p className="card-text">
-                <strong>Description:</strong>{' '}
-                {photo.alt_description || 'No description available'}
-              </p>
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('/photos')}
-              >
-                Back to Photos
-              </button>
-            </div>
-          </div>
+    <div className="photo-detail-container">
+      <div className="photo-card">
+        <img
+          src={photo.urls.regular}
+          className="photo-image"
+          alt={photo.alt_description || 'Image'}
+        />
+        <div className="photo-info">
+          <h2 className="photo-title">{photo.description || 'Untitled'}</h2>
+          <p>
+            <strong>Photographer:</strong> {photo.user.name}
+          </p>
+          <p>
+            <strong>Description:</strong> {photo.alt_description || 'No description available.'}
+          </p>
+          <button className="back-button" onClick={() => navigate('/photos')}>
+            Back to Gallery
+          </button>
         </div>
       </div>
     </div>

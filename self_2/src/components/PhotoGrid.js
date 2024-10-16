@@ -1,37 +1,37 @@
 import React from 'react';
+import '../style/CustomPhotoGrid.css'; // Đổi tên file CSS để phù hợp với phong cách mới
 import { useNavigate } from 'react-router-dom';
-import '../style/PhotoGrid.css';
 
-const PhotoGrid = ({ photos }) => {
+const PhotoGrid = ({ photos, lastPhotoElementRef }) => {
   const navigate = useNavigate();
 
   const handlePhotoClick = (photo) => {
     navigate(`/photos/${photo.id}`);
   };
-
   return (
-    <div className="container mt-4">
-      <div className="row">
-        {photos.map((photo) => (
+    <div className="photo-grid">
+      {photos.map((photo, index) => {
+        const isLastPhoto = photos.length === index + 1;
+        return (
           <div
             key={photo.id}
-            className="col-6 col-md-4 col-lg-3 mb-4"
+            className="photo-item"
+            ref={isLastPhoto ? lastPhotoElementRef : null}
             onClick={() => handlePhotoClick(photo)}
-            style={{ cursor: 'pointer' }}
           >
-            <div className="card">
+            <div className="photo-card">
               <img
-                src={photo.urls.thumb}
-                className="card-img-top"
-                alt={photo.alt_description}
+                src={photo.urls.small}
+                className="photo-img"
+                alt={photo.alt_description || 'Photo'}
               />
-              <div className="card-body">
-                <p className="card-text text-center">{photo.user.name}</p>
+              <div className="photo-info">
+                <p>{photo.user.name}</p>
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };

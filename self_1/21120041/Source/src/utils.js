@@ -1,37 +1,50 @@
 export function calculateWinner(squares, size) {
   const lines = [];
+  const winLength = size === 3 ? 3 : 5; // Define win length based on board size
 
   // Rows
   for (let row = 0; row < size; row++) {
-    const rowLine = [];
-    for (let col = 0; col < size; col++) {
-      rowLine.push(row * size + col);
+    for (let col = 0; col <= size - winLength; col++) {
+      const rowLine = [];
+      for (let i = 0; i < winLength; i++) {
+        rowLine.push(row * size + (col + i));
+      }
+      lines.push(rowLine);
     }
-    lines.push(rowLine);
   }
 
   // Columns
   for (let col = 0; col < size; col++) {
-    const colLine = [];
-    for (let row = 0; row < size; row++) {
-      colLine.push(row * size + col);
+    for (let row = 0; row <= size - winLength; row++) {
+      const colLine = [];
+      for (let i = 0; i < winLength; i++) {
+        colLine.push((row + i) * size + col);
+      }
+      lines.push(colLine);
     }
-    lines.push(colLine);
   }
 
-  // Diagonal (top-left to bottom-right)
-  const diag1 = [];
-  for (let i = 0; i < size; i++) {
-    diag1.push(i * size + i);
+  // Diagonals (top-left to bottom-right)
+  for (let row = 0; row <= size - winLength; row++) {
+    for (let col = 0; col <= size - winLength; col++) {
+      const diag1 = [];
+      for (let i = 0; i < winLength; i++) {
+        diag1.push((row + i) * size + (col + i));
+      }
+      lines.push(diag1);
+    }
   }
-  lines.push(diag1);
 
-  // Diagonal (top-right to bottom-left)
-  const diag2 = [];
-  for (let i = 0; i < size; i++) {
-    diag2.push(i * size + (size - i - 1));
+  // Diagonals (top-right to bottom-left)
+  for (let row = 0; row <= size - winLength; row++) {
+    for (let col = winLength - 1; col < size; col++) {
+      const diag2 = [];
+      for (let i = 0; i < winLength; i++) {
+        diag2.push((row + i) * size + (col - i));
+      }
+      lines.push(diag2);
+    }
   }
-  lines.push(diag2);
 
   // Check for a winner
   for (let i = 0; i < lines.length; i++) {
@@ -44,4 +57,3 @@ export function calculateWinner(squares, size) {
 
   return null;
 }
-

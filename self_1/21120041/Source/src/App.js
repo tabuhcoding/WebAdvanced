@@ -56,7 +56,7 @@ export default function Game() {
       <div className="game-settings">
         <label htmlFor="board-size">Choose board size: </label>
         <select id="board-size" value={boardSize} onChange={handleSizeChange}>
-          {[3, 5, 7, 9, 11].map(size => (
+          {[3, 11, 20].map(size => (
             <option key={size} value={size}>{`${size}x${size}`}</option>
           ))}
         </select>
